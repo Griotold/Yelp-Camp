@@ -10,7 +10,6 @@
             <ul class="list-group list-group-flush">
                 <li class="list-group-item text-mueted"><%= campground.location %></li>
                 <li class="list-group-item">$<%= campground.price %>/night</li>
-                <li class="list-group-item">A third item</li>
             </ul>
             <div class="card-body">
                 <a class="card-link btn btn-info" href="/campgrounds/<%=campground._id%>/edit">Edit</a>
@@ -19,7 +18,8 @@
                 </form>
             </div>
             <div class="card-footer text-muted">
-                2 days ago
+                <p>2 days age</p>
+                <a class="btn btn-primary" href="/campgrounds">Back to Index</a>
             </div>
         </div>
     </div>
