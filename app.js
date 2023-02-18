@@ -3,15 +3,11 @@ const path = require('path');
 const mongoose = require('mongoose');
 const uri = 'mongodb://127.0.0.1:27017/yelp-camp';
 const ejsMate = require('ejs-mate');
-const Joi = require('joi');
-const {campgroundSchema, reviewSchema} = require('./schemas.js');
-const catchAsync = require('./utils/catchAsync');
 const ExpressError = require('./utils/ExpressError');
 const methodOverride = require('method-override');
-const Campground = require('./models/campground');
-const Review = require('./models/review');
 
 const campgrounds = require('./routes/campgrounds');
+const reviews = require('./routes/reviews');
 
 mongoose.connect(uri, {
     useNewUrlParser: true,
@@ -32,45 +28,16 @@ app.set('views', path.join(__dirname, 'views'));
 
 app.use(express.urlencoded({extended: true}));
 app.use(methodOverride('_method'));
+app.use(express.static(path.join(__dirname, 'public')));
 
-
-const validateReview = (req, res, next) => {
-    const { error } = reviewSchema.validate(req.body);
-    if (error) {
-        const msg = error.details.map(el => el.message).join(',');
-        throw new ExpressError(msg, 400);
-    } else {
-        next();
-    }  
-}
 
 app.use('/campgrounds', campgrounds);
+app.use('/campgrounds/:id/reviews', reviews);
 
 app.get('/', (req, res) => {
     res.render('home');
 })
 
-
-/**
- *  Review 
-*/
-// Post
-app.post('/campgrounds/:id/reivews', validateReview, catchAsync(async (req, res) => {
-    const campground = await Campground.findById(req.params.id);
-    const review = new Review(req.body.review);
-    campground.reviews.push(review);
-    await review.save();
-    await campground.save();
-    res.redirect(`/campgrounds/${campground._id}`);
-}))
-
-// Delete
-app.delete('/campgrounds/:id/reviews/:reviewId', catchAsync( async (req, res) => {
-    const {id, reviewId} = req.params;
-    await Campground.findByIdAndUpdate(id, { $pull: { reviews: reviewId }});
-    await Review.findByIdAndDelete(reviewId);
-    res.redirect(`/campgrounds/${id}`);
-}))
 
 // 모든 라우트에 대한 콜백. 순서가 맨 아래에 있어야 함.
 app.all('*', (req, res, next) => {
