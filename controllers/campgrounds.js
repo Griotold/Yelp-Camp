@@ -2,7 +2,7 @@ const { CloudinaryStorage } = require('multer-storage-cloudinary');
 const Campground = require('../models/campground');
 const mbxGeocoding = require('@mapbox/mapbox-sdk/services/geocoding');
 const mapBoxToken = process.env.MAPBOX_TOKEN;
-const geocoder = mbxGeocoding({ accessToken: mapBoxToken});
+const geocoder = mbxGeocoding({ accessToken: mapBoxToken });
 const { cloudinary } = require('../cloudinary');
 
 module.exports.index = async (req, res) => {
