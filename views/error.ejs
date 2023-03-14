@@ -3,8 +3,10 @@
     <div class="col-8 offset-2">
         <div class="alert alert-danger" role="alert">
             <h4 class="alert-heading"><%= err.message %></h4>
+            <!-- 운영 환경에서는 에러 스택이 표시되지 않도록 -->
+            <% if (process.env.NODE_ENV !== "production") { %>
             <p><%= err.stack %></p>
+            <% } %>
         </div>
     </div>
 </div>
-
