@@ -5,7 +5,7 @@ if (process.env.NODE_ENV !== 'production') {
 const express = require('express');
 const path = require('path');
 const mongoose = require('mongoose');
-const uri = 'mongodb://127.0.0.1:27017/yelp-camp';
+const localDbUri = 'mongodb://127.0.0.1:27017/yelp-camp';
 const ejsMate = require('ejs-mate');
 const session = require('express-session');
 const flash = require('connect-flash');
@@ -15,14 +15,13 @@ const passport = require('passport');
 const LocalStrategy = require('passport-local');
 const User = require('./models/user');
 // const helmet = require('helmet');
-
 const mongoSanitize = require('express-mongo-sanitize');
-
 const userRoutes = require('./routes/users');
 const campgroundRoutes = require('./routes/campgrounds');
 const reviewRoutes = require('./routes/reviews');
+// const dbUrl = process.env.DB_URL;
 
-mongoose.connect(uri, {
+mongoose.connect(localDbUri, {
     useNewUrlParser: true,
     useUnifiedTopology: true,
 });
