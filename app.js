@@ -48,7 +48,9 @@ const sessionConfig = {
     resave: false,
     saveUninitialized: true,
     cookie: {
+        name: 'session', // connect_sid -> session으로 변경
         httpOnly: true,
+        // secure: true, // https를 위한 설정. 배포할 때 주석 풀 예정
         expires: Date.now() + 1000 * 60 * 60 * 24 * 7,
         maxAge: 1000 * 60 * 60 * 24 * 7,
     },
