@@ -19,6 +19,7 @@ const mongoSanitize = require('express-mongo-sanitize');
 const userRoutes = require('./routes/users');
 const campgroundRoutes = require('./routes/campgrounds');
 const reviewRoutes = require('./routes/reviews');
+const MongoDBStore = require('connect-mongo');
 // const dbUrl = process.env.DB_URL;
 
 mongoose.connect(localDbUri, {
@@ -43,7 +44,18 @@ app.use(methodOverride('_method'));
 app.use(express.static(path.join(__dirname, 'public')));
 app.use(mongoSanitize());
 
+const store = MongoDBStore.create({
+    mongoUrl: localDbUri,
+    secret: 'thisshouldbebettersecret',
+    touchAfter: 24 * 60 * 60,
+});
+
+store.on('error', function (e) {
+    console.log('SESSION STORE ERROR', e);
+});
+
 const sessionConfig = {
+    store,
     secret: 'thisshouldbebettersecret!',
     resave: false,
     saveUninitialized: true,
