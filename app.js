@@ -19,7 +19,7 @@ const mongoSanitize = require('express-mongo-sanitize');
 const userRoutes = require('./routes/users');
 const campgroundRoutes = require('./routes/campgrounds');
 const reviewRoutes = require('./routes/reviews');
-const MongoDBStore = require('connect-mongo');
+const MongoDBStore = require('connect-mongo')(session);
 const dbUrl = process.env.DB_URL || localDbUri;
 
 mongoose.connect(dbUrl, {
@@ -46,8 +46,8 @@ app.use(mongoSanitize());
 
 const secret = process.env.SECRET || 'thisshouldbebettersecret';
 
-const store = MongoDBStore.create({
-    mongoUrl: dbUrl,
+const store = new MongoDBStore({
+    url: dbUrl,
     secret,
     touchAfter: 24 * 60 * 60,
 });
@@ -113,6 +113,7 @@ app.use((err, req, res, next) => {
     res.status(statusCode).render('error', { err });
 });
 
-app.listen(3000, () => {
-    console.log('Serving on port 3000');
+const port = process.env.PORT || 3000;
+app.listen(port, () => {
+    console.log(`Serving on port ${port}`);
 });
